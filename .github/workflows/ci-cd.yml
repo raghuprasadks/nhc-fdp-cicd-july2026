@@ -51,3 +51,12 @@ jobs:
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/flask-api:latest
             ${{ secrets.DOCKER_USERNAME }}/flask-api:${{ github.sha }}
+
+      - name: Pull and run Docker image
+        run: |
+          docker pull ${{ secrets.DOCKER_USERNAME }}/flask-api:latest
+          docker run -d --name flask-api-test -p 5000:5000 ${{ secrets.DOCKER_USERNAME }}/flask-api:latest
+          sleep 5
+          curl -f http://127.0.0.1:5000/health
+          docker stop flask-api-test
+          docker rm flask-api-test
